@@ -8,6 +8,81 @@ It preserves playlist order and supports logged-in export via QR login.
 
 ---
 
+## 快速开始
+
+### 1. 启动网易云 API 服务
+
+开一个终端：
+
+```bash
+npm run start-api
+```
+
+不要关闭这个终端。默认 API 地址是：
+
+```text
+http://localhost:3000
+```
+
+### 2. 扫码登录
+
+另开一个终端：
+
+```bash
+node ./bin/netease-playlist-export.mjs login
+```
+
+工具会生成二维码图片：
+
+```text
+.state/login-qr.png
+```
+
+请手动打开 `.state/login-qr.png`，然后用网易云音乐 App 扫码登录。
+
+登录成功后，登录态会保存到：
+
+```text
+.state/cookie.txt
+```
+
+`.state/` 已经被 `.gitignore` 忽略，不会提交到 Git。
+
+### 3. 导出歌单
+
+```bash
+node ./bin/netease-playlist-export.mjs export \
+  'https://music.163.com/#/playlist?id=123456789'
+```
+
+也可以直接传歌单 ID：
+
+```bash
+node ./bin/netease-playlist-export.mjs export 123456789
+```
+
+### 4. 推荐：带数量校验导出
+
+把网页端显示的歌曲数量填进去：
+
+```bash
+node ./bin/netease-playlist-export.mjs export \
+  'https://music.163.com/#/playlist?id=123456789' \
+  --expected-count 801
+```
+
+如果导出的数量和网页端数量不一致，工具会输出警告。
+
+### 5. 匿名导出
+
+```bash
+node ./bin/netease-playlist-export.mjs export 123456789 --anonymous
+```
+
+注意：匿名导出可能少歌。完整归档建议先扫码登录。
+
+---
+
 ## 这是什么？
 
 这是一个命令行工具，用来把网易云音乐歌单导出成外部文件，方便个人备份、整理和迁移。
@@ -54,127 +129,6 @@ It preserves playlist order and supports logged-in export via QR login.
 - 支持 `--expected-count` 检查导出数量是否和网页端一致
 
 ---
-## 跨平台说明
-
-本项目核心逻辑基于 Node.js 18+，理论上支持 Linux、macOS 和 Windows。
-
-状态文件和导出文件都保存在项目目录内：
-
-```text
-.state/
-out/
-```
-
-不会写入 `~/.config` 或系统级目录。
-
-二维码登录会尝试自动打开 `.state/login-qr.png`：
-
-- Linux: `xdg-open`
-- macOS: `open`
-- Windows: `cmd /c start`
-
-如果自动打开失败，请手动打开 `.state/login-qr.png`。
-
-Windows PowerShell 示例：
-
-```powershell
-node .\bin\netease-playlist-export.mjs login
-
-node .\bin\netease-playlist-export.mjs export "https://music.163.com/#/playlist?id=123456789" --expected-count 801
-```
----
-
-## 快速开始
-
-### 1. 启动网易云 API 服务
-
-开一个终端：
-
-```bash
-npm run start-api
-```
-
-不要关闭这个终端。
-
-默认 API 地址是：
-
-```text
-http://localhost:3000
-```
-
-### 2. 扫码登录
-
-另开一个终端：
-
-```bash
-node ./bin/netease-playlist-export.mjs login
-```
-
-工具会生成二维码图片：
-
-```text
-.state/login-qr.png
-```
-
-它会尝试自动打开图片。  
-如果没有自动打开，请手动打开 `.state/login-qr.png`，然后用网易云音乐 App 扫码登录。
-
-登录成功后，登录态会保存到：
-
-```text
-.state/cookie.txt
-```
-
-`.state/` 已经被 `.gitignore` 忽略，不会提交到 Git。
-
-### 3. 导出歌单
-
-```bash
-node ./bin/netease-playlist-export.mjs export \
-  'https://music.163.com/#/playlist?id=123456789'
-```
-
-也可以直接传歌单 ID：
-
-```bash
-node ./bin/netease-playlist-export.mjs export 123456789
-```
-
-### 4. 带数量校验导出
-
-推荐使用 `--expected-count`，把网页端显示的歌曲数填进去：
-
-```bash
-node ./bin/netease-playlist-export.mjs export \
-  'https://music.163.com/#/playlist?id=123456789' \
-  --expected-count 801
-```
-
-如果导出的数量和你给出的数量不一致，工具会输出警告。
-
-### 5. 匿名导出
-
-如果你不想登录，也可以匿名导出：
-
-```bash
-node ./bin/netease-playlist-export.mjs export 123456789 --anonymous
-```
-
-注意：匿名导出可能少歌。
-
-### 6. 手动传入 cookie
-
-如果你已经有 `MUSIC_U`，也可以手动传入：
-
-```bash
-node ./bin/netease-playlist-export.mjs export \
-  123456789 \
-  --cookie 'MUSIC_U=你的值;'
-```
-
-不要把 `MUSIC_U` 发给别人。它是登录凭证。
-
----
 
 ## 输出文件
 
@@ -192,10 +146,6 @@ out/
 <playlist>.import.csv
 <playlist>.plain.txt
 ```
-
----
-
-## 输出格式说明
 
 ### `master.csv`
 
@@ -301,6 +251,37 @@ index,title,artist,album
 
 ---
 
+## 跨平台说明
+
+本项目核心逻辑基于 Node.js 18+，理论上支持 Linux、macOS 和 Windows。
+
+状态文件和导出文件都保存在项目目录内：
+
+```text
+.state/
+out/
+```
+
+不会写入 `~/.config` 或系统级目录。
+
+二维码登录会保存到：
+
+```text
+.state/login-qr.png
+```
+
+请手动打开该图片并使用网易云音乐 App 扫码登录。
+
+Windows PowerShell 示例：
+
+```powershell
+node .\bin\netease-playlist-export.mjs login
+
+node .\bin\netease-playlist-export.mjs export "https://music.163.com/#/playlist?id=123456789" --expected-count 801
+```
+
+---
+
 ## 与 YesPlayMusic 的关系
 
 本项目的实现思路参考了 YesPlayMusic 的歌单加载与登录态处理方式，包括：
@@ -329,6 +310,8 @@ index,title,artist,album
 
 本项目默认已经在 `.gitignore` 中忽略 `.state/`。
 
+不要在 issue、日志、截图或 PR 中泄露 `MUSIC_U`。
+
 ---
 
 ## 免责声明
@@ -349,7 +332,7 @@ index,title,artist,album
 
 ## 项目状态
 
-当前版本：v0.1
+当前版本：v0.1.0
 
 当前目标：
 
@@ -365,7 +348,7 @@ index,title,artist,album
 - 更强的网页端校验
 - 更完善的错误提示
 - 对 YesPlayMusic 增加导出按钮
-- 对接别的音乐平台API
+- 对接其他音乐平台 API
 
 ---
 

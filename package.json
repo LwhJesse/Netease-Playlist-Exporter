@@ -15,10 +15,23 @@
     "netease",
     "netease-cloud-music",
     "playlist",
-    "export",
+    "playlist-export",
     "csv",
     "json",
+    "music",
     "yesplaymusic"
   ],
+  "engines": {
+    "node": ">=18"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LwhJesse/Netease-Playlist-Exporter.git"
+  },
+  "bugs": {
+    "url": "https://github.com/LwhJesse/Netease-Playlist-Exporter/issues"
+  },
+  "homepage": "https://github.com/LwhJesse/Netease-Playlist-Exporter#readme",
+  "author": "LwhJesse",
   "license": "MIT"
 }
