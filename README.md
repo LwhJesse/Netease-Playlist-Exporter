@@ -54,6 +54,35 @@ It preserves playlist order and supports logged-in export via QR login.
 - 支持 `--expected-count` 检查导出数量是否和网页端一致
 
 ---
+## 跨平台说明
+
+本项目核心逻辑基于 Node.js 18+，理论上支持 Linux、macOS 和 Windows。
+
+状态文件和导出文件都保存在项目目录内：
+
+```text
+.state/
+out/
+```
+
+不会写入 `~/.config` 或系统级目录。
+
+二维码登录会尝试自动打开 `.state/login-qr.png`：
+
+- Linux: `xdg-open`
+- macOS: `open`
+- Windows: `cmd /c start`
+
+如果自动打开失败，请手动打开 `.state/login-qr.png`。
+
+Windows PowerShell 示例：
+
+```powershell
+node .\bin\netease-playlist-export.mjs login
+
+node .\bin\netease-playlist-export.mjs export "https://music.163.com/#/playlist?id=123456789" --expected-count 801
+```
+---
 
 ## 快速开始
 
