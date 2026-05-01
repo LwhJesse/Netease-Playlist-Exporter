@@ -1,0 +1,24 @@
+{
+  "name": "netease-playlist-exporter",
+  "version": "0.1.0",
+  "description": "Export NetEase Cloud Music playlists to CSV/JSON while preserving playlist order.",
+  "type": "module",
+  "bin": {
+    "netease-playlist-export": "./bin/netease-playlist-export.mjs"
+  },
+  "scripts": {
+    "start-api": "npx @neteaseapireborn/api",
+    "login": "node ./bin/netease-playlist-export.mjs login",
+    "export": "node ./bin/netease-playlist-export.mjs export"
+  },
+  "keywords": [
+    "netease",
+    "netease-cloud-music",
+    "playlist",
+    "export",
+    "csv",
+    "json",
+    "yesplaymusic"
+  ],
+  "license": "MIT"
+}
